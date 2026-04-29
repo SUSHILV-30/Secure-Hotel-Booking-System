@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="feedback.css">
+    <script>
+        function validateFeedbackForm() {
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var feedback = document.getElementById("feedback").value;
+            var atpos = email.indexOf("@");
+            var dotpos = email.lastIndexOf(".");
+
+            if (name == "") {
+                alert("Please provide your name!");
+                document.getElementById("name").focus();
+                return false;
+            }
+            if (email == "" || atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length) {
+                alert("Please provide a valid email address!");
+                document.getElementById("email").focus();
+                return false;
+            }
+            if (feedback == "") {
+                alert("Please provide your feedback!");
+                document.getElementById("feedback").focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Feedback Form</h1>
+        <a href="home.html" class="button1">Back</a>
+        <hr>
+    </header>
+    <main>
+        <form action="submit.html" onsubmit="return validateFeedbackForm()" method="POST/GET" class="feedback-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Your Name" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Your Email" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <label for="feedback">Feedback</label>
+                <textarea id="feedback" name="feedback" rows="5" placeholder="Your Feedback" maxlength="500" required></textarea>
+            </div>
+            <button type="submit">Submit</button>
+            
+            <button type="reset">Reset</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2024CSK ANBUDENS. All rights reserved.  <span><a href="contact.html" style="color: white;">Contact Us</a>         </span><span><a href="feedback.html" style="color: white;">Feedback</a></span>         </span><span><a href="about.html" style="color: white;">About</a></span></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <h1><u>Book Your Ideal Hotel</u></h1>
+    <p id="back">
+        <a href="home.html" class="button1">Back</a>
+    </p>
+    <hr>
+    <script>
+        function validate() {
+            if (document.getElementById("1").value == "") {
+                alert("Please provide your name!");
+                document.getElementById("1").focus();
+                return false;
+            }
+            var email = document.getElementById("2").value;
+            var atpos = email.indexOf("@");
+            var dotpos = email.indexOf(".");
+            var dotposLast = email.lastIndexOf(".");
+            if (email == "" || atpos < 1 || dotpos <= atpos + 2 || dotposLast + 2 >= email.length) {
+                alert("Please provide a correct Email ID!");
+                document.getElementById("2").focus();
+                return false;
+            }
+            var phone = document.getElementById("3").value;
+            if (phone == "" || phone.length != 10 || isNaN(phone)) {
+                alert("Please provide a valid phone number");
+                document.getElementById("3").focus();
+                return false;
+            }
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            var checkInDate = new Date(document.getElementsByName("t2")[0].value);
+            var checkOutDate = new Date(document.getElementsByName("t2")[1].value);
+            if (checkInDate <= today) {
+                alert("Check-in date cannot be today or in the past!");
+                document.getElementsByName("t2")[0].focus();
+                return false;
+            }
+            if (checkOutDate <= checkInDate) {
+                alert("Check-out date must be after the check-in date!");
+                document.getElementsByName("t2")[1].focus();
+                return false;
+            }
+            return true;
+        }
+        function getQueryParams() {
+            var params = {};
+            var url = window.location.href;
+            var queryString = url.split('?')[1];
+            if (queryString) {
+                var keyValuePairs = queryString.split('&');
+                for (var i = 0; i < keyValuePairs.length; i++) {
+                    var keyValuePair = keyValuePairs[i].split('=');
+                    var key = decodeURIComponent(keyValuePair[0]);
+                    var value = decodeURIComponent(keyValuePair[1]);
+                    params[key] = value;
+                }
+            }
+            return params;
+        }
+        function calculatePrice() {
+            var params = getQueryParams();
+            var checkInDate = new Date(document.getElementsByName("t2")[0].value);
+            var checkOutDate = new Date(document.getElementsByName("t2")[1].value);
+            var numDays = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24)); 
+            var numAdults = parseInt(document.getElementsByName("dropdown")[0].value);
+            var numChildren = parseInt(document.getElementsByName("dropdown")[1].value);
+            var bedSize = parseInt(document.getElementsByName("dropdown")[3].value);
+            var pricePerNight = parseInt(params.price);
+            var bedCharge = bedSize === 2 ? 20 : 0;
+            var totalPrice = (pricePerNight + bedCharge) * numDays + (100 * numAdults) + (50 * numChildren);
+            document.getElementById("totalPrice").innerText = "₹" + totalPrice;
+        }
+        window.onload = function () {
+            var params = getQueryParams();
+            var hotelNameSpan = document.getElementById("hotelName");
+            var hotelPriceSpan = document.getElementById("hotelPrice");
+            if (params.hotel) {
+                hotelNameSpan.innerText = params.hotel;
+            }
+            if (params.price) {
+                hotelPriceSpan.innerText = "₹" + params.price + " per night";
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <link rel="stylesheet" href="booking1.css">
+    <div class="cont">
+        <form action="submit.html" onsubmit="return(validate())" method="POST/GET" class="feedback-form">
+            <div class="form-group">
+                <h2 class="heading"><u>Booking and Contact</u></h2>
+                <div class="grid">
+                    <input type="text" name="t1" id="1" placeholder="Name" maxlength="20" required><br>
+
+                    <input type="text" name="t1" id="2" placeholder="Email" maxlength="40" required><br>
+                    <input type="text" name="t1" id="3" placeholder="Phone Number" required><br>
+
+                    <input type="text" name="t1" placeholder="Street" required><br>
+                    <input type="text" name="t1" placeholder="City" required><br>
+                    <input type="text" name="t1" placeholder="Postal Code" required><br>
+                    <input type="text" name="t1" placeholder="Country" required><br>
+                    <h2 class="heading" style="margin-bottom: 15px;"><u>Details</u></h2>
+                    <div class="grid">
+                        <h3><u>Check In</u>:-</h3>
+                        <input type="date" name="t2" required><br>
+                        <h3><u>Check Out</u>:-</h3>
+                        <input type="date" name="t2" required><br>
+                        <h3><u>Person</u>:-</h3>
+                        <select name="dropdown" required>
+                            <option value="" disabled selected>Adult</option>
+                            <option value="1">
+                                1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                            <select name="dropdown" required>
+                                <option value="" disabled selected>Child</option>
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                            <br>
+                            <h3><u>Room & Bed</u>:-</h3>
+                            <select name="dropdown" required>
+                                <option value="" disabled selected>Room</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+    
+                            <select name="dropdown" required>
+                                <option value="" disabled selected>Bedding</option>
+                                <option value="1">Single Bed</option>
+                                <option value="2">Double Bed</option>
+                            </select>
+                            <p class="info-text"><b>Please describe your needs e.g.Extra beds, children's cots</b></p><br>
+                            <textarea rows="5" cols="50" name="description" placeholder="Comment"></textarea><br>
+    
+                            <div>
+                                <b>Hotel:</b> <span id="hotelName"></span><br>
+                                <b>Price:</b> <span id="hotelPrice"></span><br>
+                                <b>Total Price:</b> <span id="totalPrice"></span>
+                            </div>
+                            <br>
+                            <input type="button" id="butonz" onclick="calculatePrice()" value="Calculate Total Price">
+                            <input type="submit" id="butonz">
+                            <input type="reset" id="butonz" name="reset" value="Reset">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </body>    
+</html>
+    
