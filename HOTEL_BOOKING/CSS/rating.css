@@ -1,71 +1,55 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
+/* ===================================
+   RATING PAGE STYLES (rating.css)
+   Updated: Consistent with global theme
+   =================================== */
+
+.rating-header {
+    text-align: center;
+    padding: 48px 20px 16px;
 }
 
-header {
-  text-align: center;
-  padding: 20px;
-  background-color: #333;
-  color: white;
-}
-
-header h1 {
-  margin: 0;
-  padding: 0;
-}
-
-hr {
-  margin: 0;
-  border: 0;
-  border-top: 1px solid #ddd;
-}
-
-main {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.rating-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    color: var(--clr-text);
 }
 
 .rating-form {
-  display: flex;
-  flex-direction: column;
+    max-width: 600px;
+    margin: 24px auto;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .form-group label {
-  margin-bottom: 5px;
-  display: block;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--clr-text);
 }
 
 .form-group select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-sizing: border-box;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--clr-input-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    background: var(--clr-card);
+    color: var(--clr-text);
+    box-sizing: border-box;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-button {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-right: 10px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #555;
+.form-group select:focus {
+    border-color: var(--clr-input-focus);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.12);
 }
