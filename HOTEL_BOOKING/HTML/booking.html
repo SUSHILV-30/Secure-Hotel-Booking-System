@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Stay — LuxeStay</title>
+    <meta name="description" content="Complete your hotel booking with LuxeStay. Secure reservation with transparent pricing and instant confirmation.">
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/booking1.css">
+
+    <!-- Structured Data (Mod #29) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LodgingReservation",
+        "provider": {
+            "@type": "LodgingBusiness",
+            "name": "LuxeStay Hotels"
+        }
+    }
+    </script>
+</head>
+<body>
+    <main id="main-content">
+        <div class="booking-container">
+            <div class="booking-header">
+                <h1>Book Your Ideal Hotel</h1>
+                <a href="home.html" class="btn btn-secondary">← Back to Home</a>
+            </div>
+            <hr>
+
+            <form action="submit.html" onsubmit="return validateBooking()" method="GET" class="booking-form">
+                <!-- Section 1: Contact Info (Mod #18 — proper labels & grouping) -->
+                <fieldset class="form-section">
+                    <legend>Booking & Contact</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="guest-name">Full Name <span class="required">*</span></label>
+                            <input type="text" name="name" id="guest-name" placeholder="Your full name" maxlength="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-email">Email <span class="required">*</span></label>
+                            <input type="email" name="email" id="guest-email" placeholder="you@example.com" maxlength="60" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" name="phone" id="guest-phone" placeholder="+91 98765 43210" pattern="[\+]?[\d\s\-]{10,15}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-street">Street</label>
+                            <input type="text" name="street" id="guest-street" placeholder="Street address">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-city">City</label>
+                            <input type="text" name="city" id="guest-city" placeholder="City">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-postal">Postal Code</label>
+                            <input type="text" name="postal" id="guest-postal" placeholder="Postal code">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest-country">Country</label>
+                            <input type="text" name="country" id="guest-country" placeholder="Country" value="India">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section 2: Stay Details -->
+                <fieldset class="form-section">
+                    <legend>Stay Details</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="check-in">Check-In Date <span class="required">*</span></label>
+                            <input type="date" name="checkin" id="check-in" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="check-out">Check-Out Date <span class="required">*</span></label>
+                            <input type="date" name="checkout" id="check-out" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adults">Adults <span class="required">*</span></label>
+                            <select name="adults" id="adults" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="children">Children</label>
+                            <select name="children" id="children">
+                                <option value="0">0</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Section 3: Room Preferences -->
+                <fieldset class="form-section">
+                    <legend>Room & Bed</legend>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="rooms">Number of Rooms <span class="required">*</span></label>
+                            <select name="rooms" id="rooms" required>
+                                <option value="" disabled selected>Select</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bedding">Bedding Type</label>
+                            <select name="bedding" id="bedding">
+                                <option value="1">Single Bed</option>
+                                <option value="2">Double Bed</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label for="special-requests">Special Requests</label>
+                            <p class="info-text">Describe any needs: extra beds, children's cots, dietary requirements, etc.</p>
+                            <textarea rows="4" id="special-requests" name="requests" placeholder="Any special requirements..."></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Booking Summary -->
+                <div class="booking-summary card">
+                    <h3>Booking Summary</h3>
+                    <div class="summary-row">
+                        <span class="summary-label">Hotel:</span>
+                        <span id="hotelName" class="summary-value">—</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Price per night:</span>
+                        <span id="hotelPrice" class="summary-value">—</span>
+                    </div>
+                    <div class="summary-row total-row">
+                        <span class="summary-label">Total Price:</span>
+                        <span id="totalPrice" class="summary-value">—</span>
+                    </div>
+                </div>
+
+                <!-- Buttons (Mod #2 — unique IDs) -->
+                <div class="button-group">
+                    <input type="button" id="calcBtn" class="btn btn-secondary" onclick="calculatePrice()" value="Calculate Total Price">
+                    <input type="submit" id="submitBtn" class="btn btn-primary" value="Confirm Booking">
+                    <input type="reset" id="resetBtn" class="btn btn-outline" value="Reset">
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="../JS/components.js"></script>
+    <script src="../JS/validation.js"></script>
+    <script>
+        window.onload = function() {
+            initBookingPage();
+
+            // Set min date for check-in to tomorrow
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            var minDate = tomorrow.toISOString().split('T')[0];
+            document.getElementById('check-in').setAttribute('min', minDate);
+
+            // Update check-out min when check-in changes
+            document.getElementById('check-in').addEventListener('change', function() {
+                var nextDay = new Date(this.value);
+                nextDay.setDate(nextDay.getDate() + 1);
+                document.getElementById('check-out').setAttribute('min', nextDay.toISOString().split('T')[0]);
+            });
+        };
+    </script>
+</body>
+</html>
