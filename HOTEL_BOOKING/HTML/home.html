@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeStay — Luxury Hotel Booking in India</title>
+    <meta name="description" content="Discover and book luxury hotels across India's most beautiful destinations. Shimla, Manali, Goa, Ooty, Darjeeling, and more. Best prices guaranteed.">
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/style.css">
+
+    <!-- Structured Data (Mod #29) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "LuxeStay",
+        "description": "Luxury hotel booking platform for destinations across India",
+        "url": "https://luxestay.example.com",
+        "telephone": "+917777777777",
+        "email": "info@cskhotels.com",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Vashishta Bhavanam",
+            "addressLocality": "Amrita Vishwa Vidyapeetam"
+        }
+    }
+    </script>
+</head>
+<body>
+    <main id="main-content">
+        <!-- Hero Section (Mod #15) -->
+        <section class="hero">
+            <img src="../images/main.jpg" alt="Panoramic view of Indian luxury hotel at sunset" class="hero-image" loading="eager">
+            <div class="hero-overlay">
+                <h1>Discover Your Perfect Stay</h1>
+                <p class="hero-subtitle">Handpicked luxury hotels across India's most stunning destinations</p>
+                <div class="hero-search">
+                    <input type="text" id="hero-search-input" placeholder="Search destinations..." aria-label="Search destinations" list="destination-list">
+                    <datalist id="destination-list">
+                        <option value="Shimla">
+                        <option value="Araku Valley">
+                        <option value="Manali">
+                        <option value="Goa">
+                        <option value="Ooty">
+                        <option value="Agra">
+                        <option value="Darjeeling">
+                        <option value="Dalhousie">
+                        <option value="Dharamshala">
+                        <option value="Alleppey">
+                    </datalist>
+                    <button class="btn btn-primary" onclick="searchDestination()" id="hero-search-btn">Explore</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Destination Navigation -->
+        <nav class="dest-nav" aria-label="Destination quick links">
+            <ul class="dest-nav-list">
+                <li><a href="shimlaweb.html">Shimla</a></li>
+                <li><a href="arakuvalley.html">Araku Valley</a></li>
+                <li><a href="manaliweb.html">Manali</a></li>
+                <li><a href="goaweb.html">Goa</a></li>
+                <li><a href="ootyweb.html">Ooty</a></li>
+                <li><a href="agraweb.html">Agra</a></li>
+                <li><a href="darjeeling1.html">Darjeeling</a></li>
+                <li><a href="dalhousieweb.html">Dalhousie</a></li>
+                <li><a href="dharamshalaweb.html">Dharamshala</a></li>
+                <li><a href="alleppeyweb.html">Alleppey</a></li>
+            </ul>
+        </nav>
+
+        <!-- Destinations Grid -->
+        <section class="destinations">
+            <h2>Explore Our Destinations</h2>
+            <div class="destination-grid">
+                <article class="destination-item card">
+                    <a href="shimlaweb.html">
+                        <img src="../images/shimla.jpg" alt="Snow-covered mountains and colonial architecture of Shimla hill station" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Shimla</h3>
+                            <span class="dest-tag">Himachal Pradesh</span>
+                            <div class="dest-rating">⭐ 4.5 <span class="rating-count">(128 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="arakuvalley.html">
+                        <img src="../images/ArakuHarithaValleyResort.jpg" alt="Lush green valleys and tribal culture of Araku Valley" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Araku Valley</h3>
+                            <span class="dest-tag">Andhra Pradesh</span>
+                            <div class="dest-rating">⭐ 4.3 <span class="rating-count">(87 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="manaliweb.html">
+                        <img src="../images/manali.jpg" alt="Snowy peaks and adventure sports in Manali valley" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Manali</h3>
+                            <span class="dest-tag">Himachal Pradesh</span>
+                            <div class="dest-rating">⭐ 4.6 <span class="rating-count">(215 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="goaweb.html">
+                        <img src="../images/goa.JPG" alt="Golden sandy beaches and vibrant nightlife of Goa" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Goa</h3>
+                            <span class="dest-tag">Goa</span>
+                            <div class="dest-rating">⭐ 4.7 <span class="rating-count">(312 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="ootyweb.html">
+                        <img src="../images/Ooty-Flower-Show-Main-II- (1).jpg" alt="Botanical gardens and tea plantations of Ooty" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Ooty</h3>
+                            <span class="dest-tag">Tamil Nadu</span>
+                            <div class="dest-rating">⭐ 4.4 <span class="rating-count">(156 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="agraweb.html">
+                        <img src="../images/taj_mahal_agra_indian_4k_5k-3840x2160.jpg" alt="Iconic white marble Taj Mahal monument in Agra" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Agra</h3>
+                            <span class="dest-tag">Uttar Pradesh</span>
+                            <div class="dest-rating">⭐ 4.8 <span class="rating-count">(428 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="darjeeling1.html">
+                        <img src="../images/darjeeling.jpg" alt="Misty tea gardens and Himalayan views of Darjeeling" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Darjeeling</h3>
+                            <span class="dest-tag">West Bengal</span>
+                            <div class="dest-rating">⭐ 4.5 <span class="rating-count">(189 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="dalhousieweb.html">
+                        <img src="../images/dalhousie.jpg" alt="Pine-covered hills and colonial charm of Dalhousie" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Dalhousie</h3>
+                            <span class="dest-tag">Himachal Pradesh</span>
+                            <div class="dest-rating">⭐ 4.2 <span class="rating-count">(95 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="dharamshalaweb.html">
+                        <img src="../images/dharamshala.jpeg" alt="Tibetan monasteries and mountain views in Dharamshala" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Dharamshala</h3>
+                            <span class="dest-tag">Himachal Pradesh</span>
+                            <div class="dest-rating">⭐ 4.4 <span class="rating-count">(142 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+
+                <article class="destination-item card">
+                    <a href="alleppeyweb.html">
+                        <img src="../images/alleppey.jpg" alt="Serene backwaters and houseboats of Alleppey, Kerala" loading="lazy">
+                        <div class="dest-info">
+                            <h3>Alleppey</h3>
+                            <span class="dest-tag">Kerala</span>
+                            <div class="dest-rating">⭐ 4.6 <span class="rating-count">(203 reviews)</span></div>
+                        </div>
+                    </a>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="../JS/components.js"></script>
+    <script>
+        // Hero search functionality
+        function searchDestination() {
+            var input = document.getElementById('hero-search-input').value.toLowerCase().trim();
+            var map = {
+                'shimla': 'shimlaweb.html',
+                'araku': 'arakuvalley.html', 'araku valley': 'arakuvalley.html',
+                'manali': 'manaliweb.html',
+                'goa': 'goaweb.html',
+                'ooty': 'ootyweb.html',
+                'agra': 'agraweb.html',
+                'darjeeling': 'darjeeling1.html',
+                'dalhousie': 'dalhousieweb.html',
+                'dharamshala': 'dharamshalaweb.html',
+                'alleppey': 'alleppeyweb.html'
+            };
+            if (map[input]) {
+                window.location.href = map[input];
+            } else {
+                // Scroll to destinations
+                document.querySelector('.destinations').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        // Enter key support
+        document.getElementById('hero-search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchDestination();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Your Experience — LuxeStay</title>
+    <meta name="description" content="Rate your booking experience with LuxeStay. Your feedback helps us provide better service.">
+    <link rel="stylesheet" href="../CSS/global.css">
+    <link rel="stylesheet" href="../CSS/rating.css">
+</head>
+<body>
+    <main id="main-content">
+        <header class="rating-header">
+            <h1>Rate Your Experience</h1>
+        </header>
+
+        <form action="thankyou.html" method="GET" class="rating-form card">
+            <div class="form-group">
+                <label for="experience">Overall Experience</label>
+                <select id="experience" name="experience" required>
+                    <option value="" disabled selected>Select Rating</option>
+                    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ Very Good</option>
+                    <option value="3">⭐⭐⭐ Good</option>
+                    <option value="2">⭐⭐ Fair</option>
+                    <option value="1">⭐ Poor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ease-of-use">Ease of Usage</label>
+                <select id="ease-of-use" name="ease-of-use" required>
+                    <option value="" disabled selected>Select Rating</option>
+                    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ Very Good</option>
+                    <option value="3">⭐⭐⭐ Good</option>
+                    <option value="2">⭐⭐ Fair</option>
+                    <option value="1">⭐ Poor</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="quality">Quality of Service</label>
+                <select id="quality" name="quality" required>
+                    <option value="" disabled selected>Select Rating</option>
+                    <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                    <option value="4">⭐⭐⭐⭐ Very Good</option>
+                    <option value="3">⭐⭐⭐ Good</option>
+                    <option value="2">⭐⭐ Fair</option>
+                    <option value="1">⭐ Poor</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Rating</button>
+        </form>
+    </main>
+
+    <script src="../JS/components.js"></script>
+</body>
+</html>

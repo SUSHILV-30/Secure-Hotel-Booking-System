@@ -1,0 +1,261 @@
+/* ===================================
+   HOME PAGE STYLES (style.css)
+   Updated: Modern palette, hero section, hover animations,
+   destination cards with ratings
+   =================================== */
+
+/* === Hero Section (Mod #15) === */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    min-height: 500px;
+    overflow: hidden;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(26, 26, 46, 0.3) 0%,
+        rgba(26, 26, 46, 0.7) 100%
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.hero-overlay h1 {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    color: #ffffff;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 32px;
+    max-width: 600px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+/* Hero Search Bar (Mod #15) */
+.hero-search {
+    display: flex;
+    gap: 0;
+    max-width: 500px;
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.hero-search input[type="text"] {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-right: none;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    outline: none;
+    transition: all var(--transition);
+}
+
+.hero-search input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.hero-search input[type="text"]:focus {
+    border-color: var(--clr-accent);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.hero-search .btn {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 14px 28px;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Destination Quick Nav === */
+.dest-nav {
+    background: var(--clr-card);
+    border-bottom: 1px solid var(--clr-card-border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dest-nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 16px;
+    margin: 0;
+    flex-wrap: nowrap;
+    min-width: max-content;
+}
+
+.dest-nav-list a {
+    display: block;
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.dest-nav-list a:hover {
+    background: var(--clr-accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* === Destinations Section === */
+.destinations {
+    text-align: center;
+    padding: 60px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.destinations h2 {
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    color: var(--clr-text);
+}
+
+.destination-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    justify-items: center;
+}
+
+/* === Destination Cards (Mod #14 — hover animations) === */
+.destination-item {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.destination-item a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.destination-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.destination-item:hover img {
+    transform: scale(1.08);
+}
+
+.dest-info {
+    padding: 16px 20px 20px;
+}
+
+.dest-info h3 {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+    color: var(--clr-text);
+}
+
+.dest-tag {
+    display: inline-block;
+    background: var(--clr-bg);
+    color: var(--clr-text-secondary);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Star ratings (Mod #17) */
+.dest-rating {
+    font-size: 0.9rem;
+    color: var(--clr-text-secondary);
+}
+
+.rating-count {
+    color: var(--clr-text-muted);
+    font-size: 0.8rem;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .hero-overlay h1 {
+        font-size: 2.2rem;
+    }
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    .hero-search {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .hero-search input[type="text"],
+    .hero-search .btn {
+        border-radius: var(--radius-sm);
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+    .destination-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        height: 70vh;
+    }
+    .hero-overlay h1 {
+        font-size: 1.8rem;
+    }
+    .destination-grid {
+        grid-template-columns: 1fr;
+    }
+}
