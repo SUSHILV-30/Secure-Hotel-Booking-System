@@ -1,131 +1,209 @@
+/* ===================================
+   BOOKING PAGE STYLES (booking1.css)
+   Updated: Proper form layout, fieldsets, summary card
+   Fix: max-width was 80px → now proper value (Mod #53 from code quality)
+   =================================== */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* === Booking Container === */
+.booking-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
 }
 
-body {
-
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+.booking-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 8px;
 }
 
-.container {
-  max-width: 80px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+.booking-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--clr-text);
+    margin: 0;
 }
 
 hr {
-  border: 0;
-  border-top: 1px solid #ccc;
-  margin-bottom: 20px;
+    border: 0;
+    border-top: 2px solid var(--clr-card-border);
+    margin-bottom: 32px;
 }
 
-form {
-  display: flex;
-  justify-content: center;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+/* === Booking Form === */
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* === Fieldsets === */
+.form-section {
+    background: var(--clr-card);
+    border: 1px solid var(--clr-card-border);
+    border-radius: var(--radius-md);
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px var(--clr-shadow);
+}
+
+.form-section legend {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--clr-accent);
+    padding: 0 8px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
 }
 
 .form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #555;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: var(--clr-text);
+}
+
+.required {
+    color: var(--clr-accent);
 }
 
 .form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
 .form-group input[type="date"],
 .form-group select,
-
 .form-group textarea {
-  margin-bottom: 10px;
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font-size: 16px;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--clr-input-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: var(--font-body);
+    background: var(--clr-card);
+    color: var(--clr-text);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    outline: none;
 }
 
-.form-group select {
-  appearance: none;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--clr-input-focus);
+    box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.12);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .info-text {
-  font-style: italic;
-  color: #888;
-  margin-top: 5px;
+    font-size: 0.85rem;
+    color: var(--clr-text-muted);
+    margin-bottom: 8px;
+    font-style: italic;
 }
 
-.button-container {
-  text-align: center;
+/* === Booking Summary === */
+.booking-summary {
+    padding: 24px;
+    background: var(--clr-card);
 }
 
-button {
-  padding: 12px 30px;
-  background-color: #333;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+.booking-summary h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: var(--clr-text);
+    border-bottom: 1px solid var(--clr-card-border);
+    padding-bottom: 8px;
 }
 
-.button1 {
-  display: inline-block;
-  padding: 12px 30px;
-  background-color: #333;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
 }
 
-.button1:hover,
-button:hover {
-  background-color: #555;
+.summary-label {
+    color: var(--clr-text-secondary);
+    font-weight: 500;
 }
 
-
-.cont{
-  display:flex;
-  justify-content: center;
-  align-items: center;
-}
-#butonz {
-  display: inline-block;
-  padding: 10px 20px;
-  margin-right: 10px;
-  margin-bottom: 5px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.summary-value {
+    font-weight: 600;
+    color: var(--clr-text);
 }
 
-#butonz:hover {
-  background-color: #555;
+.total-row {
+    border-top: 2px solid var(--clr-accent);
+    margin-top: 8px;
+    padding-top: 12px;
 }
-#back{
- text-align: right;
+
+.total-row .summary-value {
+    font-size: 1.2rem;
+    color: var(--clr-accent);
+}
+
+/* === Buttons === */
+.button-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--clr-text);
+    border: 2px solid var(--clr-input-border);
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-outline:hover {
+    border-color: var(--clr-text);
+    background: var(--clr-bg);
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .booking-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .button-group {
+        flex-direction: column;
+    }
+    .button-group .btn,
+    .button-group input[type="button"],
+    .button-group input[type="submit"],
+    .button-group input[type="reset"] {
+        width: 100%;
+    }
 }
