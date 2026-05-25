@@ -1,0 +1,66 @@
+[
+  {
+    "id": "u1",
+    "name": "LuxeStay Admin",
+    "email": "admin@luxestay.com",
+    "password": "$2a$10$FK5xvMc9xv9nWx1UlXd/Fe5BVc.hJxD8l3XNkieRT7SHC4ogpa9BW",
+    "role": "Admin",
+    "createdAt": "2026-05-22T13:11:14.714Z"
+  },
+  {
+    "id": "u2",
+    "name": "LuxeStay Staff",
+    "email": "staff@luxestay.com",
+    "password": "$2a$10$IaGKzxDcpEUTtAbRtmc7.OTzFhs3Z03bPWEpyPmsZEbPJZ2xIGvGO",
+    "role": "Staff",
+    "createdAt": "2026-05-22T13:11:14.789Z"
+  },
+  {
+    "id": "u3",
+    "name": "John Doe",
+    "email": "user@luxestay.com",
+    "password": "$2a$10$3wMKZRrbjkxssRxeZC48jOi1/LZiXb1LlR4Yys86MjEU40gGP0Dfa",
+    "role": "User",
+    "createdAt": "2026-05-22T13:11:14.865Z"
+  },
+  {
+    "id": "ff29cae7-dd96-41e7-95ce-2d6bbd5cb18b",
+    "name": "Verification Test User",
+    "email": "test_1779455694652@luxestay.com",
+    "password": "$2a$10$/Ph5xUAjmOfx.lPfaXjijelonyM7daB7wMnQZt8e2bu.Ps2.KWGaG",
+    "role": "User",
+    "createdAt": "2026-05-22T13:14:54.808Z"
+  },
+  {
+    "id": "8aed7af8-3e38-4878-859a-38688fd0662d",
+    "name": "Verification Test User",
+    "email": "test_1779455713793@luxestay.com",
+    "password": "$2a$10$K.g5Jxn37L1rJ19E0hrXM.oQ.OjoYsO6jR0zeR8blLbqoEkGh4zku",
+    "role": "User",
+    "createdAt": "2026-05-22T13:15:13.876Z"
+  },
+  {
+    "id": "6b1eefe7-62a0-435d-b37f-628ff24acbfa",
+    "name": "Verification Test User",
+    "email": "test_1779455749260@luxestay.com",
+    "password": "$2a$10$OjOCOVjRuYMV2rVNj3RgIe/7W.qAONVtJUS.gSnaB0arypPO9Fbwi",
+    "role": "User",
+    "createdAt": "2026-05-22T13:15:49.384Z"
+  },
+  {
+    "id": "7daef745-a5e3-49dc-9f54-cbd8f8d73b48",
+    "name": "Verification Test User",
+    "email": "test_1779456182014@luxestay.com",
+    "password": "$2a$10$k72Dj/1MQBipGMaVZG2SKuGGrnpC24TDUCEb1Fh1Ia.7izIt7mg52",
+    "role": "User",
+    "createdAt": "2026-05-22T13:23:02.114Z"
+  },
+  {
+    "id": "b07e5a0e-5968-4e6b-ac6e-9f7a66c4b060",
+    "name": "sushil",
+    "email": "sushilv2005@gmail.com",
+    "password": "$2a$10$3.uFwC0aH33J4pp4dJF0ZO3FKJy7p.TaSzFomV7VBwSa1h19S1fIW",
+    "role": "User",
+    "createdAt": "2026-05-22T13:31:03.732Z"
+  }
+]
