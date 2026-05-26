@@ -323,7 +323,7 @@ app.post('/api/auth/login', (req, res) => {
   res.json({
     mfaRequired: true,
     mfaToken,
-    message: 'MFA OTP verification required. Code has been printed to the server terminal.'
+    message: 'MFA OTP verification required. A 6-digit code has been sent to your email.'
   });
 });
 
