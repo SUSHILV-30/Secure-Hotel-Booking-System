@@ -196,7 +196,7 @@ export default function Login({ onLoginSuccess, backendUrl }) {
                 />
               </div>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '10px', textAlign: 'center' }}>
-                For demonstration, please retrieve the code from your <strong>server terminal log</strong>.
+                Please check your email inbox for the 6-digit verification code.
               </p>
             </div>
 
