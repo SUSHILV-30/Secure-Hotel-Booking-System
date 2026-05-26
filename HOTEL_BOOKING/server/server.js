@@ -10,6 +10,53 @@ const fs = require('fs');
 
 const db = require('./database');
 const cryptoUtils = require('./cryptoUtils');
+const nodemailer = require('nodemailer');
+
+// Create SMTP Transporter for sending MFA emails
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || ''
+  }
+});
+
+// Function to send email
+async function sendOTPEmail(email, otp) {
+  const mailOptions = {
+    from: process.env.SMTP_FROM || '"LuxeStay Secure" <no-reply@luxestay.com>',
+    to: email,
+    subject: 'LuxeStay Verification Code',
+    text: `Your LuxeStay verification code is: ${otp}. It will expire in 5 minutes.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #0f172a; color: #f8fafc;">
+        <h2 style="color: #3b82f6; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 10px;">LuxeStay MFA Verification</h2>
+        <p>Dear Guest,</p>
+        <p>Your one-time password (OTP) for logging in to LuxeStay is:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #d4a853; background-color: #1e293b; padding: 10px 25px; border-radius: 6px; border: 1px solid #334155;">${otp}</span>
+        </div>
+        <p style="color: #94a3b8; font-size: 14px;">This code is valid for 5 minutes. Please do not share it with anyone.</p>
+        <p style="border-top: 1px solid #334155; padding-top: 15px; font-size: 12px; color: #64748b; text-align: center;">LuxeStay Secure Booking Platform &copy; 2026</p>
+      </div>
+    `
+  };
+
+  try {
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log(`[SMTP CONFIG] SMTP credentials not fully configured. Skipping mail sending.`);
+      return false;
+    }
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`[SMTP SUCCESS] OTP email sent successfully to ${email}. Message ID: ${info.messageId}`);
+    return true;
+  } catch (error) {
+    console.error(`[SMTP ERROR] Failed to send OTP email: ${error.message}`);
+    return false;
+  }
+}
 
 // Load environment variables or define defaults
 const PORT = process.env.PORT || 3000;
@@ -265,7 +312,10 @@ app.post('/api/auth/login', (req, res) => {
   console.log(`⏱️  Expires in 5 minutes`);
   console.log('==============================================\n');
   
-  db.logEvent('MFA_OTP_GENERATED', '6-digit OTP generated and printed to server console', email);
+  // Asynchronously send MFA OTP to user's email
+  sendOTPEmail(email, otp);
+  
+  db.logEvent('MFA_OTP_GENERATED', '6-digit OTP generated, printed to console, and email initiated', email);
   
   // 4. Create temporary MFA token
   const mfaToken = jwt.sign({ email: email.toLowerCase(), step: 'mfa' }, JWT_SECRET, { expiresIn: '5m' });
