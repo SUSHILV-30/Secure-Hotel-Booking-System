@@ -14,6 +14,9 @@ export default function Login({ onLoginSuccess, backendUrl }) {
   const [mfaRequired, setMfaRequired] = useState(false);
   const [mfaToken, setMfaToken] = useState('');
   const [otp, setOtp] = useState('');
+  const [resendTimer, setResendTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   
   // UI states
   const [loading, setLoading] = useState(false);
@@ -21,6 +24,19 @@ export default function Login({ onLoginSuccess, backendUrl }) {
   const [successMsg, setSuccessMsg] = useState('');
   
   const navigate = useNavigate();
+
+  // Reset timer on MFA trigger
+  React.useEffect(() => {
+    let interval = null;
+    if (mfaRequired && resendTimer > 0) {
+      interval = setInterval(() => {
+        setResendTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (resendTimer === 0) {
+      setCanResend(true);
+    }
+    return () => clearInterval(interval);
+  }, [mfaRequired, resendTimer]);
 
   const handleCaptchaChange = (token) => {
     setCaptchaToken(token);
@@ -56,11 +72,38 @@ export default function Login({ onLoginSuccess, backendUrl }) {
         setMfaRequired(true);
         setMfaToken(data.mfaToken);
         setSuccessMsg(data.message);
+        setResendTimer(60);
+        setCanResend(false);
       }
     } catch (err) {
       setError('Connection refused. Is backend server running?');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setResendLoading(true);
+    setError('');
+    setSuccessMsg('');
+    try {
+      const res = await fetch(`${backendUrl}/api/auth/resend-mfa`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mfaToken })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to resend OTP');
+        return;
+      }
+      setSuccessMsg(data.message);
+      setResendTimer(60);
+      setCanResend(false);
+    } catch (err) {
+      setError('Failed to contact server for resending OTP');
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -204,6 +247,24 @@ export default function Login({ onLoginSuccess, backendUrl }) {
               {loading ? <Loader2 className="animate-spin" size={18} /> : null}
               Confirm Verification Code
             </button>
+
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '5px' }}>
+              {canResend ? (
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={resendLoading}
+                  className="auth-link"
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline', color: 'var(--primary)', fontWeight: '600' }}
+                >
+                  {resendLoading ? 'Resending...' : 'Resend Verification Code'}
+                </button>
+              ) : (
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  Resend code in <strong style={{ color: 'var(--primary)' }}>{resendTimer}s</strong>
+                </span>
+              )}
+            </div>
 
             <button 
               type="button" 

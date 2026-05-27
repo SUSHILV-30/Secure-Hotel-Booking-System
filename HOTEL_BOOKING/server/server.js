@@ -390,6 +390,42 @@ app.post('/api/auth/verify-mfa', (req, res) => {
   }
 });
 
+// Resend MFA OTP Route
+app.post('/api/auth/resend-mfa', (req, res) => {
+  const { mfaToken } = req.body;
+  if (!mfaToken) {
+    return res.status(400).json({ error: 'MFA token is required' });
+  }
+
+  try {
+    const decoded = jwt.verify(mfaToken, JWT_SECRET);
+    if (decoded.step !== 'mfa') {
+      return res.status(400).json({ error: 'Invalid MFA flow token' });
+    }
+
+    const email = decoded.email;
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 mins
+
+    otpMap.set(email.toLowerCase(), { otp, expiresAt });
+
+    console.log('\n==============================================');
+    console.log(`🔑 [MFA SIMULATOR] LuxeStay Verification Code (Resent)`);
+    console.log(`📧 User: ${email}`);
+    console.log(`🔢 OTP Code: ${otp}`);
+    console.log(`⏱️  Expires in 5 minutes`);
+    console.log('==============================================\n');
+
+    sendOTPEmail(email, otp);
+
+    db.logEvent('MFA_OTP_RESENT', '6-digit OTP regenerated, printed to console, and email initiated', email);
+
+    res.json({ message: 'A new 6-digit verification code has been sent to your email.' });
+  } catch (err) {
+    return res.status(400).json({ error: 'Invalid or expired MFA token.' });
+  }
+});
+
 // BOOKING ENDPOINTS
 
 // Create Booking

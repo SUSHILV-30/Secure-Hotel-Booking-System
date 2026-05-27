@@ -102,6 +102,19 @@ async function runTests() {
       throw new Error('MFA was not triggered after credentials validation');
     }
     console.log('✔ Credentials verified. MFA OTP has been generated.');
+
+    // Test OTP Resending
+    console.log('\n[Step 3.5] Testing OTP Resending endpoint...');
+    const resendRes = await fetch(`${BACKEND_URL}/api/auth/resend-mfa`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mfaToken: loginData.mfaToken })
+    });
+    const resendData = await resendRes.json();
+    if (!resendRes.ok) {
+      throw new Error(`OTP Resend failed: ${resendData.error}`);
+    }
+    console.log('✔ OTP Resend request successful:', resendData.message);
     
     // Wait briefly for server logs to flush
     await wait(2000);
