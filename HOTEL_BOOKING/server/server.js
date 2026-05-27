@@ -12,16 +12,26 @@ const db = require('./database');
 const cryptoUtils = require('./cryptoUtils');
 const nodemailer = require('nodemailer');
 
-// Create SMTP Transporter for sending MFA emails
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || ''
+// Function to create SMTP Transporter dynamically
+function getTransporter() {
+  const user = process.env.SMTP_USER || '';
+  const pass = process.env.SMTP_PASS || '';
+  
+  if (user.toLowerCase().includes('gmail.com')) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass }
+    });
+  } else {
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true' || process.env.SMTP_PORT === '465',
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false }
+    });
   }
-});
+}
 
 // Function to send email
 async function sendOTPEmail(email, otp) {
@@ -49,7 +59,8 @@ async function sendOTPEmail(email, otp) {
       console.log(`[SMTP CONFIG] SMTP credentials not fully configured. Skipping mail sending.`);
       return false;
     }
-    const info = await transporter.sendMail(mailOptions);
+    const mailTransporter = getTransporter();
+    const info = await mailTransporter.sendMail(mailOptions);
     console.log(`[SMTP SUCCESS] OTP email sent successfully to ${email}. Message ID: ${info.messageId}`);
     return true;
   } catch (error) {
