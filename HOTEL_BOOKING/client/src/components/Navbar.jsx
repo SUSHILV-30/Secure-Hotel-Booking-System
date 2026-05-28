@@ -64,10 +64,18 @@ export default function Navbar({ user, onLogout }) {
               <span className={getRoleBadgeClass(user.role)}>
                 {user.role}
               </span>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#f8fafc' }}>
-                <User size={14} />
+              <Link 
+                to="/profile" 
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: '#f8fafc', textDecoration: 'none', cursor: 'pointer' }}
+                className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}
+              >
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} style={{ width: '22px', height: '22px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--gold)' }} />
+                ) : (
+                  <User size={14} />
+                )}
                 {user.name}
-              </span>
+              </Link>
               <button 
                 onClick={handleLogoutClick} 
                 className="btn-nav btn-nav-outline"
