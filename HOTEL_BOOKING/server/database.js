@@ -86,10 +86,22 @@ function logEvent(action, details, userEmail = 'System') {
   }
 }
 
+function updateUserProfile(email, updatedFields) {
+  const users = getUsers();
+  const index = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+  if (index !== -1) {
+    users[index] = { ...users[index], ...updatedFields };
+    writeJSONFile(USERS_FILE, users);
+    return users[index];
+  }
+  return null;
+}
+
 module.exports = {
   getUsers,
   saveUser,
   updateUserRole,
+  updateUserProfile,
   getBookings,
   saveBooking,
   getLogs,

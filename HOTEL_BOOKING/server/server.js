@@ -393,7 +393,13 @@ app.post('/api/auth/verify-mfa', (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        phone: user.phone || '',
+        address: user.address || '',
+        dob: user.dob || '',
+        gender: user.gender || '',
+        bio: user.bio || '',
+        avatar: user.avatar || ''
       }
     });
   } catch (err) {
@@ -434,6 +440,47 @@ app.post('/api/auth/resend-mfa', (req, res) => {
     res.json({ message: 'A new 6-digit verification code has been sent to your email.' });
   } catch (err) {
     return res.status(400).json({ error: 'Invalid or expired MFA token.' });
+  }
+});
+
+// Update User Profile Route (MFA protected)
+app.post('/api/auth/profile', authenticateToken, (req, res) => {
+  const { name, password, phone, address, dob, gender, bio, avatar } = req.body;
+  const email = req.user.email;
+
+  const updatedFields = {};
+  if (name) updatedFields.name = name;
+  if (phone !== undefined) updatedFields.phone = phone;
+  if (address !== undefined) updatedFields.address = address;
+  if (dob !== undefined) updatedFields.dob = dob;
+  if (gender !== undefined) updatedFields.gender = gender;
+  if (bio !== undefined) updatedFields.bio = bio;
+  if (avatar !== undefined) updatedFields.avatar = avatar;
+
+  if (password && password.trim().length > 0) {
+    updatedFields.password = bcrypt.hashSync(password, 10);
+  }
+
+  const updatedUser = db.updateUserProfile(email, updatedFields);
+  if (updatedUser) {
+    db.logEvent('PROFILE_UPDATE', 'User profile details updated successfully', email);
+    res.json({
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        phone: updatedUser.phone || '',
+        address: updatedUser.address || '',
+        dob: updatedUser.dob || '',
+        gender: updatedUser.gender || '',
+        bio: updatedUser.bio || '',
+        avatar: updatedUser.avatar || ''
+      },
+      message: 'Profile updated successfully!'
+    });
+  } else {
+    res.status(404).json({ error: 'User not found' });
   }
 });
 
