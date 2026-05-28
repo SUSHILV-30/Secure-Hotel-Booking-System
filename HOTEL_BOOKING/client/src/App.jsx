@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
 import VerifyReceipt from './pages/VerifyReceipt';
+import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
@@ -25,6 +26,11 @@ export default function App() {
 
   const handleLoginSuccess = (userData) => {
     setUser(userData);
+  };
+
+  const handleProfileUpdate = (userData) => {
+    setUser(userData);
+    localStorage.setItem('luxestay_user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
@@ -77,6 +83,15 @@ export default function App() {
             element={
               <PrivateRoute user={user}>
                 <Dashboard backendUrl={backendUrl} user={user} />
+              </PrivateRoute>
+            } 
+          />
+
+          <Route 
+            path="/profile" 
+            element={
+              <PrivateRoute user={user}>
+                <Profile backendUrl={backendUrl} user={user} onProfileUpdate={handleProfileUpdate} />
               </PrivateRoute>
             } 
           />
