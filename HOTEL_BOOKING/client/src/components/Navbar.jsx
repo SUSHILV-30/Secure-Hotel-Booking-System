@@ -34,8 +34,8 @@ export default function Navbar({ user, onLogout }) {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="nav-container">
         <Link to="/" className="brand">
-          <div className="brand-icon">
-            <Home size={18} strokeWidth={2.5} />
+          <div className="brand-icon" style={{ padding: '4px', overflow: 'hidden' }}>
+            <img src="/favicon.png" alt="LuxeStay Logo" style={{ width: '26px', height: '26px', objectFit: 'cover', borderRadius: '4px' }} />
           </div>
           <span>LuxeStay</span>
         </Link>
