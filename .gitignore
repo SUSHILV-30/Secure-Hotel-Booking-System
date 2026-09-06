@@ -1,6 +1,19 @@
-﻿node_modules/
+node_modules/
 .DS_Store
 Thumbs.db
 dist/
 build/
+.vite/
+*.log
 otp_inbox.txt
+
+# Sensitive credentials & environment
+.env
+.env.*
+!.env.example
+
+# Cryptographic Keys (Keep server keys private)
+HOTEL_BOOKING/server/keys/
+
+# Database files containing user/booking personal information
+HOTEL_BOOKING/server/data/

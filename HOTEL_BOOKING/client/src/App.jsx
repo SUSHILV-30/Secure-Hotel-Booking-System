@@ -11,7 +11,7 @@ import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
-  const backendUrl = 'http://localhost:3000';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
