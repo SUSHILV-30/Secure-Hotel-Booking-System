@@ -132,8 +132,8 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, '../images')));
 
 // Seed default accounts if database is empty
-function seedUsers() {
-  const users = db.getUsers();
+async function seedUsers() {
+  const users = await db.getUsers();
   if (users.length === 0) {
     const defaultUsers = [
       {
@@ -161,11 +161,12 @@ function seedUsers() {
         createdAt: new Date().toISOString()
       }
     ];
-    defaultUsers.forEach(u => db.saveUser(u));
-    db.logEvent('SEED_USERS', 'Default Admin, Staff, and User accounts seeded');
+    for (const u of defaultUsers) {
+      await db.saveUser(u);
+    }
+    await db.logEvent('SEED_USERS', 'Default Admin, Staff, and User accounts seeded');
   }
 }
-seedUsers();
 
 // In-memory OTP storage
 const otpMap = new Map();
@@ -299,15 +300,15 @@ app.get('/api/auth/captcha', (req, res) => {
 });
 
 // Register Route
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, role } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
   
-  const users = db.getUsers();
+  const users = await db.getUsers();
   if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-    db.logEvent('REGISTER_FAIL', `Attempted registration for existing email: ${email}`, email);
+    await db.logEvent('REGISTER_FAIL', `Attempted registration for existing email: ${email}`, email);
     return res.status(400).json({ error: 'User already exists with this email' });
   }
   
@@ -323,14 +324,14 @@ app.post('/api/auth/register', (req, res) => {
     createdAt: new Date().toISOString()
   };
   
-  db.saveUser(newUser);
-  db.logEvent('REGISTER_SUCCESS', `User registered successfully with role: ${targetRole}`, email);
+  await db.saveUser(newUser);
+  await db.logEvent('REGISTER_SUCCESS', `User registered successfully with role: ${targetRole}`, email);
   
   res.status(201).json({ message: 'Registration successful! Please login.' });
 });
 
 // Login Route with CAPTCHA & MFA initialization
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   const { email, password, captchaText, captchaToken } = req.body;
   
   if (!email || !password || !captchaText || !captchaToken) {
@@ -341,20 +342,20 @@ app.post('/api/auth/login', (req, res) => {
   try {
     const decoded = jwt.verify(captchaToken, JWT_SECRET);
     if (decoded.text.toUpperCase() !== captchaText.toUpperCase().trim()) {
-      db.logEvent('LOGIN_FAIL_CAPTCHA', 'Invalid CAPTCHA solution', email);
+      await db.logEvent('LOGIN_FAIL_CAPTCHA', 'Invalid CAPTCHA solution', email);
       return res.status(400).json({ error: 'Invalid CAPTCHA code. Please try again.' });
     }
   } catch (err) {
-    db.logEvent('LOGIN_FAIL_CAPTCHA', 'Expired CAPTCHA token', email);
+    await db.logEvent('LOGIN_FAIL_CAPTCHA', 'Expired CAPTCHA token', email);
     return res.status(400).json({ error: 'CAPTCHA session expired. Please refresh the CAPTCHA.' });
   }
   
   // 2. Verify Credentials
-  const users = db.getUsers();
+  const users = await db.getUsers();
   const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
   
   if (!user || !bcrypt.compareSync(password, user.password)) {
-    db.logEvent('LOGIN_FAIL_CREDENTIALS', 'Invalid email or password', email);
+    await db.logEvent('LOGIN_FAIL_CREDENTIALS', 'Invalid email or password', email);
     return res.status(401).json({ error: 'Invalid email or password' });
   }
   
@@ -375,7 +376,7 @@ app.post('/api/auth/login', (req, res) => {
   // Asynchronously send MFA OTP to user's email
   sendOTPEmail(email, otp);
   
-  db.logEvent('MFA_OTP_GENERATED', '6-digit OTP generated, printed to console, and email initiated', email);
+  await db.logEvent('MFA_OTP_GENERATED', '6-digit OTP generated, printed to console, and email initiated', email);
   
   // 4. Create temporary MFA token
   const mfaToken = jwt.sign({ email: email.toLowerCase(), step: 'mfa' }, JWT_SECRET, { expiresIn: '5m' });
@@ -388,7 +389,7 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 // Verify MFA OTP Route
-app.post('/api/auth/verify-mfa', (req, res) => {
+app.post('/api/auth/verify-mfa', async (req, res) => {
   const { mfaToken, otp } = req.body;
   
   if (!mfaToken || !otp) {
@@ -405,18 +406,18 @@ app.post('/api/auth/verify-mfa', (req, res) => {
     const otpData = otpMap.get(email);
     
     if (!otpData) {
-      db.logEvent('MFA_FAIL', 'No OTP session found', email);
+      await db.logEvent('MFA_FAIL', 'No OTP session found', email);
       return res.status(400).json({ error: 'OTP request expired or does not exist.' });
     }
     
     if (Date.now() > otpData.expiresAt) {
       otpMap.delete(email);
-      db.logEvent('MFA_FAIL', 'OTP code expired', email);
+      await db.logEvent('MFA_FAIL', 'OTP code expired', email);
       return res.status(400).json({ error: 'OTP code expired. Please log in again.' });
     }
     
     if (otpData.otp !== otp.trim()) {
-      db.logEvent('MFA_FAIL', 'Incorrect OTP provided', email);
+      await db.logEvent('MFA_FAIL', 'Incorrect OTP provided', email);
       return res.status(400).json({ error: 'Incorrect OTP code.' });
     }
     
@@ -424,7 +425,7 @@ app.post('/api/auth/verify-mfa', (req, res) => {
     otpMap.delete(email);
     
     // Fetch full user details
-    const users = db.getUsers();
+    const users = await db.getUsers();
     const user = users.find(u => u.email.toLowerCase() === email);
     
     // Generate final Access JWT
@@ -434,7 +435,7 @@ app.post('/api/auth/verify-mfa', (req, res) => {
       { expiresIn: '24h' }
     );
     
-    db.logEvent('LOGIN_SUCCESS', `MFA verified. Session opened. Role: ${user.role}`, email);
+    await db.logEvent('LOGIN_SUCCESS', `MFA verified. Session opened. Role: ${user.role}`, email);
     
     res.json({
       token: accessToken,
@@ -457,7 +458,7 @@ app.post('/api/auth/verify-mfa', (req, res) => {
 });
 
 // Resend MFA OTP Route
-app.post('/api/auth/resend-mfa', (req, res) => {
+app.post('/api/auth/resend-mfa', async (req, res) => {
   const { mfaToken } = req.body;
   if (!mfaToken) {
     return res.status(400).json({ error: 'MFA token is required' });
@@ -484,7 +485,7 @@ app.post('/api/auth/resend-mfa', (req, res) => {
 
     sendOTPEmail(email, otp);
 
-    db.logEvent('MFA_OTP_RESENT', '6-digit OTP regenerated, printed to console, and email initiated', email);
+    await db.logEvent('MFA_OTP_RESENT', '6-digit OTP regenerated, printed to console, and email initiated', email);
 
     res.json({ message: 'A new 6-digit verification code has been sent to your email.' });
   } catch (err) {
@@ -493,7 +494,7 @@ app.post('/api/auth/resend-mfa', (req, res) => {
 });
 
 // Update User Profile Route (MFA protected)
-app.post('/api/auth/profile', authenticateToken, (req, res) => {
+app.post('/api/auth/profile', authenticateToken, async (req, res) => {
   const { name, password, phone, address, dob, gender, bio, avatar } = req.body;
   const email = req.user.email;
 
@@ -510,9 +511,9 @@ app.post('/api/auth/profile', authenticateToken, (req, res) => {
     updatedFields.password = bcrypt.hashSync(password, 10);
   }
 
-  const updatedUser = db.updateUserProfile(email, updatedFields);
+  const updatedUser = await db.updateUserProfile(email, updatedFields);
   if (updatedUser) {
-    db.logEvent('PROFILE_UPDATE', 'User profile details updated successfully', email);
+    await db.logEvent('PROFILE_UPDATE', 'User profile details updated successfully', email);
     res.json({
       user: {
         id: updatedUser.id,
@@ -566,7 +567,7 @@ app.post('/api/bookings', authenticateToken, requireRole(['User']), async (req, 
   const verifiedTotalPrice = (pricePerNight + bedCharge) * numDays + (100 * parseInt(numAdults || 1)) + (50 * parseInt(numChildren || 0));
   
   if (verifiedTotalPrice !== clientCalculatedPrice) {
-    db.logEvent(
+    await db.logEvent(
       'PRICE_TAMPERING_WARNING', 
       `Price discrepancy detected! Client sent ₹${clientCalculatedPrice}, verified price is ₹${verifiedTotalPrice}. Overwriting with verified price.`,
       req.user.email
@@ -579,7 +580,7 @@ app.post('/api/bookings', authenticateToken, requireRole(['User']), async (req, 
   const encryptedGuestPhone = cryptoUtils.encryptAES(guestPhone);
   const encryptedAddress = cryptoUtils.encryptAES(`${guestStreet}, ${guestCity}, ${guestPostalCode}, ${guestCountry}`);
   
-  db.logEvent('DATA_ENCRYPTION', 'AES-256 encryption applied to sensitive guest fields', req.user.email);
+  await db.logEvent('DATA_ENCRYPTION', 'AES-256 encryption applied to sensitive guest fields', req.user.email);
   
   // 3. Construct booking object
   const bookingId = 'BK-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 3).toUpperCase();
@@ -612,7 +613,7 @@ app.post('/api/bookings', authenticateToken, requireRole(['User']), async (req, 
   const signature = cryptoUtils.signRSA(canonicalString);
   newBooking.signature = signature;
   
-  db.logEvent('DIGITAL_SIGNATURE_GENERATION', `RSA-2048 signature generated for booking: ${bookingId}`, req.user.email);
+  await db.logEvent('DIGITAL_SIGNATURE_GENERATION', `RSA-2048 signature generated for booking: ${bookingId}`, req.user.email);
   
   // 5. Generate QR Code
   // Encodes booking details and signature for easy checking
@@ -633,8 +634,8 @@ app.post('/api/bookings', authenticateToken, requireRole(['User']), async (req, 
     newBooking.qrCode = '';
   }
   
-  db.saveBooking(newBooking);
-  db.logEvent('BOOKING_CREATION', `Booking ${bookingId} successfully recorded in system`, req.user.email);
+  await db.saveBooking(newBooking);
+  await db.logEvent('BOOKING_CREATION', `Booking ${bookingId} successfully recorded in system`, req.user.email);
   
   // Return receipt format
   res.status(201).json({
@@ -658,8 +659,8 @@ app.post('/api/bookings', authenticateToken, requireRole(['User']), async (req, 
 });
 
 // Get Bookings (RBAC)
-app.get('/api/bookings', authenticateToken, (req, res) => {
-  const bookings = db.getBookings();
+app.get('/api/bookings', authenticateToken, async (req, res) => {
+  const bookings = await db.getBookings();
   let filteredBookings = [];
   
   if (req.user.role === 'Admin' || req.user.role === 'Staff') {
@@ -695,7 +696,7 @@ app.get('/api/bookings', authenticateToken, (req, res) => {
 });
 
 // Verify Receipt Cryptographic Integrity (Public)
-app.post('/api/bookings/verify-receipt', (req, res) => {
+app.post('/api/bookings/verify-receipt', async (req, res) => {
   const { bookingId, hotelName, checkIn, checkOut, totalPrice, guestEmail, signature } = req.body;
   
   if (!bookingId || !hotelName || !checkIn || !checkOut || !totalPrice || !guestEmail || !signature) {
@@ -706,18 +707,18 @@ app.post('/api/bookings/verify-receipt', (req, res) => {
   // We need to re-verify using the public RSA key
   // Since we don't have the original ciphertext structure, we can reconstruct canonical components
   // To verify signature, we need to locate the actual booking in database to grab the exact guestHash block
-  const bookings = db.getBookings();
+  const bookings = await db.getBookings();
   const matched = bookings.find(b => b.bookingId === bookingId);
   
   if (!matched) {
-    db.logEvent('RECEIPT_VERIFICATION_FAIL', `Receipt verification failed. Booking ID not found: ${bookingId}`);
+    await db.logEvent('RECEIPT_VERIFICATION_FAIL', `Receipt verification failed. Booking ID not found: ${bookingId}`);
     return res.status(404).json({ valid: false, error: 'Booking ID not found in system database' });
   }
   
   // Decrypt guest email to confirm matches
   const storedEmail = cryptoUtils.decryptAES(matched.guestEmail);
   if (storedEmail.toLowerCase() !== guestEmail.toLowerCase().trim()) {
-    db.logEvent('RECEIPT_VERIFICATION_FAIL', `Email mismatch for booking verification: ${bookingId}`);
+    await db.logEvent('RECEIPT_VERIFICATION_FAIL', `Email mismatch for booking verification: ${bookingId}`);
     return res.status(400).json({ valid: false, error: 'Guest email does not match booking records' });
   }
   
@@ -728,10 +729,10 @@ app.post('/api/bookings/verify-receipt', (req, res) => {
   const isValid = cryptoUtils.verifyRSA(canonicalString, signature);
   
   if (isValid) {
-    db.logEvent('RECEIPT_VERIFICATION_SUCCESS', `Signature verified successfully for booking: ${bookingId}`);
+    await db.logEvent('RECEIPT_VERIFICATION_SUCCESS', `Signature verified successfully for booking: ${bookingId}`);
     res.json({ valid: true, message: 'Cryptographic signature is valid. The receipt is genuine and untampered.' });
   } else {
-    db.logEvent('RECEIPT_VERIFICATION_FAIL', `Cryptographic signature is invalid for booking: ${bookingId}`);
+    await db.logEvent('RECEIPT_VERIFICATION_FAIL', `Cryptographic signature is invalid for booking: ${bookingId}`);
     res.json({ valid: false, error: 'Signature verification failed. The receipt may have been tampered with.' });
   }
 });
@@ -739,14 +740,14 @@ app.post('/api/bookings/verify-receipt', (req, res) => {
 // ADMIN ROUTES
 
 // Get logs (Admin only)
-app.get('/api/admin/logs', authenticateToken, requireRole(['Admin']), (req, res) => {
-  res.json(db.getLogs());
+app.get('/api/admin/logs', authenticateToken, requireRole(['Admin']), async (req, res) => {
+  res.json(await db.getLogs());
 });
 
 // Get users (Admin only)
-app.get('/api/admin/users', authenticateToken, requireRole(['Admin']), (req, res) => {
+app.get('/api/admin/users', authenticateToken, requireRole(['Admin']), async (req, res) => {
   // Strip password hash before sending
-  const users = db.getUsers().map(u => ({
+  const users = (await db.getUsers()).map(u => ({
     id: u.id,
     name: u.name,
     email: u.email,
@@ -757,7 +758,7 @@ app.get('/api/admin/users', authenticateToken, requireRole(['Admin']), (req, res
 });
 
 // Modify Role (Admin only)
-app.post('/api/admin/users/role', authenticateToken, requireRole(['Admin']), (req, res) => {
+app.post('/api/admin/users/role', authenticateToken, requireRole(['Admin']), async (req, res) => {
   const { email, role } = req.body;
   if (!email || !role || !['User', 'Staff', 'Admin'].includes(role)) {
     return res.status(400).json({ error: 'Valid user email and target role required' });
@@ -767,19 +768,28 @@ app.post('/api/admin/users/role', authenticateToken, requireRole(['Admin']), (re
     return res.status(400).json({ error: 'Admins cannot change their own roles' });
   }
   
-  const success = db.updateUserRole(email, role);
+  const success = await db.updateUserRole(email, role);
   
   if (success) {
-    db.logEvent('USER_ROLE_UPDATED', `Role for user ${email} changed to ${role}`, req.user.email);
+    await db.logEvent('USER_ROLE_UPDATED', `Role for user ${email} changed to ${role}`, req.user.email);
     res.json({ message: `Role successfully updated to ${role} for ${email}` });
   } else {
     res.status(404).json({ error: `User with email ${email} not found` });
   }
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`\n🚀 LuxeStay secure server listening on port ${PORT}`);
-  console.log(`🔐 Cryptographic keys ready: AES-256 & RSA-2048`);
-  console.log(`👥 Seeding test accounts complete.`);
-});
+// Start Server with async initialization
+(async () => {
+  try {
+    await db.initDB();
+    await seedUsers();
+    app.listen(PORT, () => {
+      console.log(`\n🚀 LuxeStay secure server listening on port ${PORT}`);
+      console.log(`🔐 Cryptographic keys ready: AES-256 & RSA-2048`);
+      console.log(`👥 Seeding test accounts complete.`);
+    });
+  } catch (err) {
+    console.error('[STARTUP] Fatal error during initialization:', err);
+    process.exit(1);
+  }
+})();
